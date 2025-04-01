@@ -1,0 +1,89 @@
+{
+ /* created 'by hand' using the input from  https://jsoncanvas.org/ > 'Toggle output'
+    with LLM help. Valid JSON (except for this comment).
+     Ports extension could be used to capture more of the intended semantics.*/
+  "ocif": "https://canvasprotocol.org/ocif/v0.4",
+  "nodes": [
+    { "id": "spec",
+      "position": [600, 140],
+      "size": [480, 480],
+      "resource": "res-spec-md",
+      "data": [{"type": "@ocif/node/rect"}]
+    },
+    { "id": "readme",
+      "position": [36, 240],
+      "size": [480, 580],
+      "resource": "res-readme-md",
+      "data": [{"type": "@ocif/node/rect"}]
+    },
+    { "id": "nav",
+      "position": [336, 36],
+      "size": [182, 168],
+      "resource": "res-nav-text",
+      "data": [{"type": "@ocif/node/rect"}]
+    },
+    { "id": "logo",
+      "position": [36, 48],
+      "size": [176, 68],
+      "resource": "res-logo-svg",
+      "data": [{"type": "@ocif/node/rect"}]
+    },
+    { "id": "arrow-edge-readme-spec",
+      "data": [{
+          "type": "@ocif/node/arrow",
+          "start": [276, 530],
+          "end": [600, 380],
+          "startMarker": "none",
+          "endMarker": "arrowhead",
+          "relation": "relation-edge-readme-spec"
+      }]
+    },
+    { "id": "arrow-edge-logo-nav",
+      "data": [{
+          "type": "@ocif/node/arrow",
+          "start": [212, 82],
+          "end": [336, 120],
+          "startMarker": "none",
+          "endMarker": "arrowhead",
+          "relation": "relation-edge-logo-nav"
+      }]
+    }
+  ],
+  "relations": [
+    { "id": "relation-edge-readme-spec",
+      "data": [{
+          "type": "@ocif/rel/edge",
+          "start": "readme",
+          "end": "spec",
+          "directed": true,
+          "node": "arrow-edge-readme-spec"
+      }]
+    },
+    { "id": "relation-edge-logo-nav",
+      "data": [{
+          "type": "@ocif/rel/edge",
+          "start": "logo",
+          "end": "nav",
+          "directed": true,
+          "node": "arrow-edge-logo-nav"
+      }]
+    }
+  ],
+  "resources": [
+    { "id": "res-spec-md",
+      "representations": [{ "mime-type": "text/markdown", "location": "spec/1.0.md" }]
+    },
+    { "id": "res-readme-md",
+      "representations": [{ "mime-type": "text/markdown", "location": "readme.md" }]
+    },
+    { "id": "res-nav-text",
+      "representations": [{
+          "mime-type": "text/markdown",
+          "content": "Learn more:\n- [Apps](/docs/apps)\n- [Spec](/spec/1.0)\n- [GitHub](https://github.com/obsidianmd/jsoncanvas)"
+      }]
+    },
+    { "id": "res-logo-svg",
+      "representations": [{ "mime-type": "image/svg+xml", "location": "logo.svg" }]
+    }
+  ]
+}
