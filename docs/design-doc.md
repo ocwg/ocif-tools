@@ -31,9 +31,7 @@ The OCIF Utilities project will establish a mono-repo containing a comprehensive
 (No changes from the previous version of this section, but the contents of ocif-lib/src/ will be more spec-aware.)
 
 `ocif-utilities/`
-
 `├── packages/`
-
 `│   ├── ocif-lib/       # Core TypeScript library`
 `│   │   ├── src/`
 `│   │   │   ├── index.ts          # Main library exports`
