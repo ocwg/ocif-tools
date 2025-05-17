@@ -6,7 +6,7 @@ What is OCIF? See here:
 
 Known tools:
 
-- An OCIF validator with SVG export ability:  https://ocif-validator.vercel.app/ 
+- An OCIF validator with SVG and JSONSchema export ability:  [https://ocif-validator.vercel.app/ ](https://validator.canvasprotocol.org/)
 
 Upcoming: 
  
