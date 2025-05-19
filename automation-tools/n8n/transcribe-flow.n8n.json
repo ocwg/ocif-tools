@@ -1,0 +1,476 @@
+{
+  "name": "Transcribe Audio to markdown",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b0c32794-5bcf-4493-8c85-f9193dad3e79",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-120, -340]
+    },
+    {
+      "parameters": {
+        "command": "[put local path here]/ocwg/tools/ffmpeg/ffmpeg -i [put path and filename of recording here].mp4 -ar 16000 -ac 1 -c:a pcm_s16le /tmp/output.wav -y"
+      },
+      "id": "b84cbdc6-917e-4115-ab66-2ac7109111b1",
+      "name": "Extract Audio",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [60, -340]
+    },
+    {
+      "parameters": {
+        "command": "[put local path here]/ocwg/tools/whisper.cpp/main -m [put local path here]/ocwg/tools/whisper.cpp/models/ggml-base.en.bin -f /tmp/output.wav --output-txt  "
+      },
+      "id": "3cbf43a0-84e1-4cde-b358-761fa130fea7",
+      "name": "Transcribe Audio",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [280, -340]
+    },
+    {
+      "parameters": {
+        "filePath": "/tmp/output.wav.txt"
+      },
+      "id": "685d9b99-7b46-40dc-b25a-12e07ffd8772",
+      "name": "Read Transcript",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [480, -340]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.data }}"
+            },
+            {
+              "content": "The above is a transcript of a meeting with 4-5 speakers. Please break up the transcript into paragraph based on what you assume is different speakers and topical paragraphs. No need to assign speakers or anything like that, just the paragraph breaks. Use markdown for formatting\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [900, -340],
+      "id": "1b637049-7a5d-405e-834f-e198a1594001",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "T0okn9JpFaddzmTm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.data }}"
+            },
+            {
+              "content": "attached is a transcript of the open canvas working group meeting. there 4-5 participants. can you please extract the major discussion points from this meeting and list them as a bulleted list with a 1-2 sentence summary of each discussion point. Please list any action items or take-aways mentioned.\n \n- reorganize the topics + summaries to each be a single bullet point with the topic name as the bold text \n- pull out the action items and group together. not every topic had an action item, so don't make one up if there wasn't one. \n- list takeaways separately\n\n Use markdown for formatting\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [900, -100],
+      "id": "a98967f3-9fbe-4541-93c3-e5b65d79c75b",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "T0okn9JpFaddzmTm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.data }}"
+            },
+            {
+              "content": "give me a one sentence summary"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [900, 160],
+      "id": "b2de0c0c-7efb-49e9-a1aa-c48a8e5627f2",
+      "name": "OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "T0okn9JpFaddzmTm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [920, 640],
+      "id": "50b95fb5-1db1-4149-a156-da56f103e3ba",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "oYwZ6idlx9H4EGTi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "give me a one sentence summary",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "you're an expert at summarizing video transcription"
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "={{ $json.data }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [900, 420],
+      "id": "806ed8f9-082c-4e59-8b03-e3876b8d5737",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "text",
+        "options": {
+          "fileName": "/tmp/test.txt"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [1340, 420],
+      "id": "9854cfb7-78f9-47ae-9425-c79540c67fb5",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "message.content",
+        "options": {
+          "fileName": "[put local path here]/ocwg/meetings/transcription.md"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [1320, -340],
+      "id": "ee32b479-dcb3-40ba-a7b9-7ab1350d1b89",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "message.content",
+        "options": {
+          "fileName": "[put local path here]/ocwg/meetings/transcription-summary.md"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [1340, -100],
+      "id": "b54dea67-ca6b-40d6-807f-f96a00083fd5",
+      "name": "Convert to File2"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "message.content",
+        "options": {
+          "fileName": "[put local path here]/ocwg/meetings/transcription-one-sentence.md"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [1340, 160],
+      "id": "10339590-b31f-4f9f-abc5-afe8b1761bf3",
+      "name": "Convert to File3"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "[put local path here]/ocwg/meetings/transcription.md",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1620, -340],
+      "id": "582c36f0-41e1-4679-878d-3edd0562c8f3",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "[put local path here]/ocwg/meetings/transcription-summary.md",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1620, -100],
+      "id": "7f2f37e4-c2c0-42b8-af13-273d65e7b387",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "[put local path here]/ocwg/meetings/transcription-one-sentence.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1620, 160],
+      "id": "f79d1b0f-ebf3-422e-8a6e-7697d637f6e1",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "[put local path here]/ocwg/meetings/transcription-gemini.md",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1620, 420],
+      "id": "c30d7ebb-9845-4763-8086-6b4fa3496034",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [700, -340],
+      "id": "e4743299-4c00-45c0-8291-b76f7d9e01e3",
+      "name": "Extract from File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Extract Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Audio": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Audio": {
+      "main": [
+        [
+          {
+            "node": "Read Transcript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Transcript": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File2": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File3": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a073ec2a-0ace-4f54-bc07-36c8dd2aab46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "64e3e2ab0da2774c158d9041d32e0744278df9d3f8caae580dcd24592b353ce0"
+  },
+  "id": "Ph9gHB0mU8e9EHjN",
+  "tags": []
+}
