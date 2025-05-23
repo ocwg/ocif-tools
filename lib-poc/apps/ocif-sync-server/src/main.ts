@@ -20,6 +20,7 @@ import {
   OCIFResource,
 } from './lib/types/ocif';
 import { tldrawShape } from './helpers/tldraw-shape';
+import { TransformService } from './lib/services/transform-service';
 
 const app = express();
 
@@ -189,6 +190,13 @@ function setupFileWatcher() {
 
                   //dataStore?.applyDiff(diff);
                   io.emit('patch', diff);
+
+                  const transforrmToOCIF = new TransformService();
+                  const ocif = transforrmToOCIF.transformJsonCanvasToOCIF(json);
+                  fs.writeFileSync(
+                    path.join(process.cwd(), 'sync', 'ocif', 'ocif.ocif.json'),
+                    JSON.stringify(ocif)
+                  );
                 }
               }
             });
