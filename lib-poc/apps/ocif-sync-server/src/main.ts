@@ -340,8 +340,58 @@ io.on('connection', (socket) => {
           relations: [] as OCIFRelation[],
           resources: [] as OCIFResource[],
         };
-        Object.entries(snapshot.store).forEach(([key, value]) => {
-          if (value.typeName === 'shape') {
+        const tldrawItems = Object.entries(snapshot.store);
+        tldrawItems.forEach(([key, value]) => {
+          if (value.typeName === 'shape' && value.type === 'arrow') {
+            // arrow also 2 bindings , somewhat comparable with relation
+            // arrow only contains the position of the start and end of the arrow
+            // bindings contain the link to the shape nodes
+            // TODO : read the bindings for this arrow ... and if there are 2 bindings .. then export to jsoncanvas/ocif
+            // bindings can be found by looking at the fromId and compare with this shape id
+            // toId is then the other shape id .. terminal property is start/end
+
+            const bindings = tldrawItems.filter(
+              ([key, bindingValue]) =>
+                bindingValue.typeName === 'binding' &&
+                bindingValue.type === 'arrow' &&
+                bindingValue.fromId === value.id
+            );
+            if (bindings.length === 2) {
+              const helper = value as any;
+              ocifcanvas.nodes?.push({
+                id: value.id,
+                position: [value.x, value.y],
+                data: [
+                  {
+                    type: '@ocif/node/arrow',
+                    start: [helper.props.start.x, helper.props.start.y],
+                    end: [helper.props.end.x, helper.props.end.y],
+                    relation: `relation-${value.id}`,
+                  },
+                ],
+              });
+              const startBinding =
+                (bindings[0][1] as any).props.terminal === 'start'
+                  ? bindings[0][1]
+                  : bindings[1][1];
+              const endBinding =
+                (bindings[0][1] as any).props.terminal === 'end'
+                  ? bindings[0][1]
+                  : bindings[1][1];
+              ocifcanvas.relations?.push({
+                id: `relation-${value.id}`,
+                data: [
+                  {
+                    type: '@ocif/rel/edge',
+                    start: (startBinding as any).toId,
+                    end: (endBinding as any).toId,
+                    rel: 'relation',
+                    node: value.id,
+                  },
+                ],
+              });
+            }
+          } else if (value.typeName === 'shape' && value.type === 'geo') {
             console.log(value.id, value);
             const helper = value as any;
             ocifcanvas.resources?.push({

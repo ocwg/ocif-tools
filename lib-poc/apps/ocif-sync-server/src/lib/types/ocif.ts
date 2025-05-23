@@ -9,6 +9,9 @@ export type OCIFNode = {
     strokeWidth?: number;
     strokeColor?: string;
     fillColor?: string;
+    start?: number[];
+    end?: number[];
+    relation?: string;
   }>;
 };
 
