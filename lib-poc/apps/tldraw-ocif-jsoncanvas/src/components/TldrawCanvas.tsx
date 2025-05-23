@@ -65,8 +65,11 @@ export default function TldrawCanvas() {
       console.log('Received patch from server', diff);
       isRemoteChangeRef.current = true;
       try {
+        console.log('Applying diff to dataStore', diff);
         dataStore.applyDiff(diff);
         store.loadSnapshot(dataStore.getSnapshot() as TLStoreSnapshot);
+      } catch (error) {
+        console.error('Error applying diff:', error);
       } finally {
         isRemoteChangeRef.current = false;
       }
