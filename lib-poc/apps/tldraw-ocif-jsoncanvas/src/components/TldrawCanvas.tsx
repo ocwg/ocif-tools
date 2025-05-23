@@ -103,7 +103,7 @@ export default function TldrawCanvas() {
   };
 
   return (
-    <div style={{ position: 'fixed', inset: 0 }}>
+    <div className="tldraw__editor" style={{ position: 'fixed', inset: 0 }}>
       <Tldraw
         store={store}
         onMount={(editor) => {
