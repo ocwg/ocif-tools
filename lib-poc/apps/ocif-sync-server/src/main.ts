@@ -12,6 +12,13 @@ import {
   TLRecord,
   TLStore,
 } from '@tldraw/tldraw';
+import { JsonCanvasService } from './lib/services/jsoncanvas-service';
+import {
+  OCIFJson,
+  OCIFNode,
+  OCIFRelation,
+  OCIFResource,
+} from './lib/types/ocif';
 
 const app = express();
 
@@ -163,34 +170,32 @@ io.on('connection', (socket) => {
         fs.writeFileSync(drawingPath, updated);
         tldrawLastSave = updated;
 
-        const jsoncanvas = {
-          nodes: [] as any[],
-          edges: [] as any[],
-        };
-        const ocifcanvas = {
+        const ocifcanvas: OCIFJson = {
           ocif: 'https://canvasprotocol.org/ocif/0.5',
-          nodes: [] as any[],
-          relations: [] as any[],
+          nodes: [] as OCIFNode[],
+          relations: [] as OCIFRelation[],
+          resources: [] as OCIFResource[],
         };
         Object.entries(snapshot.store).forEach(([key, value]) => {
           if (value.typeName === 'shape') {
             console.log(value.id, value);
             const helper = value as any;
-            jsoncanvas.nodes.push({
-              type: 'text',
-              id: value.id,
-              x: value.x,
-              y: value.y,
-              width: helper.props.w,
-              height: helper.props.h,
-              text:
-                helper.props.richText.content?.[0]?.content?.[0]?.text ??
-                'tesxt',
+            ocifcanvas.resources?.push({
+              id: `resource-${value.id}`,
+              representations: [
+                {
+                  'mime-type': 'text/plain',
+                  content:
+                    helper.props.richText.content?.[0]?.content?.[0]?.text ??
+                    'test',
+                },
+              ],
             });
-            ocifcanvas.nodes.push({
+            ocifcanvas.nodes?.push({
               id: value.id,
               position: [value.x, value.y],
               size: [helper.props.w, helper.props.h],
+              resource: `resource-${value.id}`,
               data: [
                 {
                   type: '@ocif/node/rect',
@@ -202,6 +207,8 @@ io.on('connection', (socket) => {
             });
           }
         });
+        const convertedJSONCanvas =
+          JsonCanvasService.convertToJsonCanvas(ocifcanvas);
         fs.writeFileSync(
           path.join(
             process.cwd(),
@@ -210,7 +217,7 @@ io.on('connection', (socket) => {
             'localfirst-demo',
             'jsoncanvas.canvas'
           ),
-          JSON.stringify(jsoncanvas)
+          JSON.stringify(convertedJSONCanvas)
         );
         fs.writeFileSync(
           path.join(process.cwd(), 'sync', 'ocif', 'ocif.ocif.json'),
