@@ -19,7 +19,6 @@ import {
   OCIFRelation,
   OCIFResource,
 } from './lib/types/ocif';
-import { tldrawShape } from './helpers/tldraw-shape';
 import { TransformService } from './lib/services/transform-service';
 
 const app = express();
@@ -169,6 +168,7 @@ function setupFileWatcher() {
                 (n: any) => n.id === node.id
               );
               const tldraworgShape = tldraw.store[node.id];
+              console.log('tldraworgShape', tldraworgShape);
               if (originalNode && tldraworgShape) {
                 if (
                   node.text !== originalNode.text ||
@@ -178,7 +178,7 @@ function setupFileWatcher() {
                   node.height !== originalNode.height
                 ) {
                   console.log('node updated', node);
-                  const tldrawNode = structuredClone(tldrawShape);
+                  const tldrawNode = structuredClone(tldraworgShape);
                   tldrawNode.id = node.id;
                   tldrawNode.x = node.x;
                   tldrawNode.y = node.y;
@@ -201,6 +201,10 @@ function setupFileWatcher() {
               }
             });
             obsidanLastSave = fileContent;
+          } else {
+            if (!isSyncingFromObsidian) {
+              console.log('obsidanLastSave is the same');
+            }
           }
           isSyncingFromObsidian = false;
         }, 100);
