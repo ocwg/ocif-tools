@@ -21,6 +21,44 @@ import {
 } from './lib/types/ocif';
 import { TransformService } from './lib/services/transform-service';
 
+const colorNameToHexRgb = (colorName: string) => {
+  const colors: { [key: string]: string } = {
+    red: '#FF0000',
+    green: '#00FF00',
+    blue: '#0000FF',
+    yellow: '#FFFF00',
+    black: '#000000',
+    white: '#FFFFFF',
+    orange: '#FFA500',
+    purple: '#800080',
+    pink: '#FFC0CB',
+    cyan: '#00FFFF',
+    magenta: '#FF00FF',
+    gray: '#808080',
+    brown: '#A52A2A',
+    lime: '#00FF00',
+    teal: '#008080',
+    navy: '#000080',
+    maroon: '#800000',
+    olive: '#808000',
+    silver: '#C0C0C0',
+    gold: '#FFD700',
+    coral: '#FF7F50',
+    turquoise: '#40E0D0',
+    violet: '#EE82EE',
+    'light-violet': '#E6E6FA',
+    'light-blue': '#ADD8E6',
+    'light-red': '#FF7F7F',
+    'light-green': '#90EE90',
+    'light-yellow': '#FFFFE0',
+    'light-orange': '#FFA07A',
+    'light-gray': '#D3D3D3',
+    'light-brown': '#D2B48C',
+    'light-pink': '#FFB6C1',
+  };
+  return colors[colorName] || colorName;
+};
+
 const app = express();
 
 const server = http.createServer(app);
@@ -153,7 +191,7 @@ function setupFileWatcher() {
             isSyncingFromObsidian = false;
             return;
           }
-          console.log('obsidanLastSave', obsidanLastSave);
+          //console.log('obsidanLastSave', obsidanLastSave);
           if (fileContent !== obsidanLastSave) {
             const tldraw = JSON.parse(tldrawLastSave);
             const json = JSON.parse(fileContent);
@@ -188,18 +226,16 @@ function setupFileWatcher() {
                     node.text;
                   diff.updated[node.id] = [tldraworgShape, tldrawNode];
 
-                  //dataStore?.applyDiff(diff);
                   io.emit('patch', diff);
-
-                  const transforrmToOCIF = new TransformService();
-                  const ocif = transforrmToOCIF.transformJsonCanvasToOCIF(json);
-                  fs.writeFileSync(
-                    path.join(process.cwd(), 'sync', 'ocif', 'ocif.ocif.json'),
-                    JSON.stringify(ocif)
-                  );
                 }
               }
             });
+            const transforrmToOCIF = new TransformService();
+            const ocif = transforrmToOCIF.transformJsonCanvasToOCIF(json);
+            fs.writeFileSync(
+              path.join(process.cwd(), 'sync', 'ocif', 'ocif.ocif.json'),
+              JSON.stringify(ocif)
+            );
             obsidanLastSave = fileContent;
           } else {
             if (!isSyncingFromObsidian) {
@@ -329,7 +365,7 @@ io.on('connection', (socket) => {
                   type: '@ocif/node/rect',
                   strokeWidth: 1,
                   strokeColor: '#000000',
-                  fillColor: '#ffffff',
+                  fillColor: colorNameToHexRgb(helper.props.color ?? '#ffffff'),
                 },
               ],
             });
