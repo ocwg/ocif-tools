@@ -148,8 +148,14 @@ function setupFileWatcher() {
             isSyncingFromObsidian = false;
             return;
           }
+          if (!tldrawLastSave) {
+            console.log('tldrawLastSave is null');
+            isSyncingFromObsidian = false;
+            return;
+          }
           console.log('obsidanLastSave', obsidanLastSave);
           if (fileContent !== obsidanLastSave) {
+            const tldraw = JSON.parse(tldrawLastSave);
             const json = JSON.parse(fileContent);
             const original = JSON.parse(obsidanLastSave);
             const diff = {
@@ -161,7 +167,8 @@ function setupFileWatcher() {
               const originalNode = original.nodes.find(
                 (n: any) => n.id === node.id
               );
-              if (originalNode) {
+              const tldraworgShape = tldraw.store[node.id];
+              if (originalNode && tldraworgShape) {
                 if (
                   node.text !== originalNode.text ||
                   node.x !== originalNode.x ||
@@ -178,7 +185,7 @@ function setupFileWatcher() {
                   tldrawNode.props.h = node.height;
                   tldrawNode.props.richText.content[0].content[0].text =
                     node.text;
-                  diff.updated[node.id] = [tldrawNode, tldrawNode];
+                  diff.updated[node.id] = [tldraworgShape, tldrawNode];
 
                   //dataStore?.applyDiff(diff);
                   io.emit('patch', diff);
