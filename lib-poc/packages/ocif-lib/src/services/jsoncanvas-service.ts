@@ -51,7 +51,7 @@ export class JsonCanvasService {
 
     // Process nodes
     if (ocifJson.nodes) {
-      Object.entries(ocifJson.nodes).forEach(([, node], index) => {
+      ocifJson.nodes.forEach((node, index) => {
         if (node.data?.[0]?.type === '@ocif/node/arrow') return;
 
         const nodeWidth = node.size?.[0] || 120;

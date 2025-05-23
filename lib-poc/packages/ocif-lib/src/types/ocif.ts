@@ -5,37 +5,39 @@ export type OCIFNode = {
   resource?: string;
   text?: string;
   data?: Array<{
-    type: '@ocif/node/oval' | '@ocif/node/rectangle' | '@ocif/node/arrow';
+    type: '@ocif/node/oval' | '@ocif/node/rect' | '@ocif/node/arrow';
     strokeWidth?: number;
     strokeColor?: string;
     fillColor?: string;
   }>;
 };
 
+export type OCIFRelation = {
+  id: string;
+  data: Array<{
+    type: string;
+    start: string;
+    end: string;
+    rel: string;
+    node: string;
+    members?: string[];
+  }>;
+};
+
+export type OCIFResource = {
+  id: string;
+  representations?: Array<{
+    'mime-type': string;
+    content?: string;
+    location?: string;
+  }>;
+};
+
 export type OCIFJson = {
-  version: string;
-  nodes?: {
-    [key: string]: OCIFNode;
-  };
-  relations?: Array<{
-    id: string;
-    data: Array<{
-      type: string;
-      start: string;
-      end: string;
-      rel: string;
-      node: string;
-      members?: string[];
-    }>;
-  }>;
-  resources?: Array<{
-    id: string;
-    representations?: Array<{
-      'mime-type': string;
-      content?: string;
-      location?: string;
-    }>;
-  }>;
+  ocif: string;
+  nodes?: Array<OCIFNode>;
+  relations?: Array<OCIFRelation>;
+  resources?: Array<OCIFResource>;
 };
 
 export interface Node {
