@@ -5,6 +5,15 @@
   "references": [
     {
       "path": "./packages/ocif-lib"
+    },
+    {
+      "path": "./apps/tldraw-ocif-jsoncanvas-e2e"
+    },
+    {
+      "path": "./apps/tldraw-ocif-jsoncanvas"
+    },
+    {
+      "path": "./apps/ocif-sync-server"
     }
   ]
 }

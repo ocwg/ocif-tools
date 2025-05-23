@@ -1,0 +1,77 @@
+{
+  "name": "@ocwg-tools-test/ocif-sync-server",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@tldraw/tldraw": "^3.12.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "tldraw": "^3.12.2"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/ocif-sync-server/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "apps/ocif-sync-server/src/main.ts",
+          "tsConfig": "apps/ocif-sync-server/tsconfig.app.json",
+          "assets": [
+            "apps/ocif-sync-server/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@ocwg-tools-test/ocif-sync-server:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@ocwg-tools-test/ocif-sync-server:build:development"
+          },
+          "production": {
+            "buildTarget": "@ocwg-tools-test/ocif-sync-server:build:production"
+          }
+        }
+      },
+      "test": {
+        "options": {
+          "passWithNoTests": true
+        }
+      }
+    }
+  }
+}

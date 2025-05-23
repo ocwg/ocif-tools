@@ -1,0 +1,11 @@
+{
+  "name": "@ocwg-tools-test/tldraw-ocif-jsoncanvas",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@tldraw/tldraw": "^3.12.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "tldraw": "^3.12.2"
+  }
+}
