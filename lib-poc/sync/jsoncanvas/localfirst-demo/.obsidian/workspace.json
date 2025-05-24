@@ -1,0 +1,179 @@
+{
+  "main": {
+    "id": "8cae12f2529b3556",
+    "type": "split",
+    "children": [
+      {
+        "id": "12df8fd08f74a7be",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "746a7f190e1e9ca5",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "jsoncanvas.canvas",
+                "viewState": {
+                  "x": 497.5280119159803,
+                  "y": 414.95908921314873,
+                  "zoom": -0.6666666666666665
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "jsoncanvas"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ab2d56edc7641e26",
+    "type": "split",
+    "children": [
+      {
+        "id": "21203efdcc16189c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "41db4935fb6041e6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "0b3cc00740c5aa42",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "ba3d1c92949d8f89",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e87fb43f88c2d571",
+    "type": "split",
+    "children": [
+      {
+        "id": "dc8b869e117edf69",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4ece095d525fc27d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "jsoncanvas.canvas",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for jsoncanvas"
+            }
+          },
+          {
+            "id": "f4eefd8745ce7a9e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "jsoncanvas.canvas",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from jsoncanvas"
+            }
+          },
+          {
+            "id": "e2588cbae6c3e186",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "a9bf249f764f0095",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "jsoncanvas.canvas",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of jsoncanvas"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "746a7f190e1e9ca5",
+  "lastOpenFiles": [
+    "Welcome.md",
+    "jsoncanvas.canvas"
+  ]
+}
