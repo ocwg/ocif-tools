@@ -201,12 +201,18 @@ function setupFileWatcher() {
               removed: {},
               updated: {} as any,
             };
+            console.log('json', json);
+            if (!json?.nodes || !Array.isArray(json?.nodes)) {
+              console.error('JSON does not contain nodes:', json);
+              isSyncingFromObsidian = false;
+              return;
+            }
             json.nodes.forEach((node: any) => {
               const originalNode = original.nodes.find(
                 (n: any) => n.id === node.id
               );
               const tldraworgShape = tldraw.store[node.id];
-              console.log('tldraworgShape', tldraworgShape);
+              //console.log('tldraworgShape', tldraworgShape);
               if (originalNode && tldraworgShape) {
                 if (
                   node.text !== originalNode.text ||
@@ -215,15 +221,17 @@ function setupFileWatcher() {
                   node.width !== originalNode.width ||
                   node.height !== originalNode.height
                 ) {
-                  console.log('node updated', node);
+                  //console.log('node updated', node);
                   const tldrawNode = structuredClone(tldraworgShape);
                   tldrawNode.id = node.id;
                   tldrawNode.x = node.x;
                   tldrawNode.y = node.y;
                   tldrawNode.props.w = node.width;
                   tldrawNode.props.h = node.height;
-                  tldrawNode.props.richText.content[0].content[0].text =
-                    node.text;
+                  if (tldrawNode.props?.richText?.content?.[0]?.content?.[0]) {
+                    tldrawNode.props.richText.content[0].content[0].text =
+                      node.text;
+                  }
                   diff.updated[node.id] = [tldraworgShape, tldrawNode];
 
                   io.emit('patch', diff);

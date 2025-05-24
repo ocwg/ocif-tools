@@ -9,6 +9,8 @@ import {
   TLStore,
   TLStoreSnapshot,
   TLRecord,
+  getSnapshot,
+  loadSnapshot,
 } from '@tldraw/tldraw';
 import { HistoryEntry, Store } from '@tldraw/store';
 import { io } from 'socket.io-client';
@@ -54,8 +56,16 @@ export default function TldrawCanvas() {
       console.log('Received init from server');
       isRemoteChangeRef.current = true;
       try {
-        store.loadSnapshot(snapshot);
-        dataStore.loadStoreSnapshot(store.getSnapshot('all'));
+        const session = JSON.parse(
+          localStorage.getItem('tldraw-session') ?? '{}'
+        );
+
+        loadSnapshot(store, snapshot);
+        if (session) {
+          loadSnapshot(store, { session });
+        }
+
+        //dataStore.loadStoreSnapshot(store.getSnapshot('all'));
       } finally {
         isRemoteChangeRef.current = false;
       }
@@ -94,7 +104,8 @@ export default function TldrawCanvas() {
     if (isRemoteChangeRef.current) return;
     if (!socketRef.current?.connected) return;
     if (change.source !== 'user') return;
-
+    const { session } = getSnapshot(editor.store);
+    localStorage.setItem('tldraw-session', JSON.stringify(session));
     if (change) {
       socketRef.current.emit('patch', change.changes);
     }
