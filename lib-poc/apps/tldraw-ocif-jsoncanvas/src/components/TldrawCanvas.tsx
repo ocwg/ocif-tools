@@ -66,12 +66,10 @@ export default function TldrawCanvas() {
       isRemoteChangeRef.current = true;
       try {
         console.log('Applying diff to dataStore', diff);
-        dataStore.applyDiff(diff);
-        store.loadSnapshot(dataStore.getSnapshot() as TLStoreSnapshot);
 
-        // store.mergeRemoteChanges(() => {
-        //   store.put(diff);
-        // });
+        store.mergeRemoteChanges(() => {
+          store.applyDiff(diff);
+        });
       } catch (error) {
         console.error('Error applying diff:', error);
       } finally {
