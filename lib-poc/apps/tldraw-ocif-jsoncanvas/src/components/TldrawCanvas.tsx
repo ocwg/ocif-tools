@@ -105,6 +105,7 @@ export default function TldrawCanvas() {
   return (
     <div className="tldraw__editor" style={{ position: 'fixed', inset: 0 }}>
       <Tldraw
+        autoFocus
         store={store}
         onMount={(editor) => {
           editorRef.current = editor;
